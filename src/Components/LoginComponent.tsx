@@ -118,10 +118,9 @@ export default function LoginForm() {
 
             <div style={{ textAlign: "center", marginBottom: "16px" }}>
               <a
+                href="/forgot-password"
                 style={{
                   color: "#336699",
-                  textDecorationLine: "underline",
-                  textDecoration: "#336699",
                 }}
               >
                 Forgot Password
@@ -135,7 +134,6 @@ export default function LoginForm() {
             >
               <Button
                 block
-                // icon={<LinkedinOutlined />}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -147,19 +145,12 @@ export default function LoginForm() {
                   boxShadow: "0 2px 12px #00000014",
                 }}
               >
-                <img
-                  src="img/linkedin-icon.png"
-                  alt="Linkedin Logo"
-                  //   style={{
-                  //     width: "24px",
-                  //   }}
-                />
+                <img src="img/linkedin-icon.png" alt="Linkedin Logo" />
                 Continue with LinkedIn
               </Button>
 
               <Button
                 block
-                // icon={<GoogleOutlined />}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -171,19 +162,12 @@ export default function LoginForm() {
                   boxShadow: "0 2px 12px #00000014",
                 }}
               >
-                <img
-                  src="img/google-icon.png"
-                  alt="Google Logo"
-                  //   style={{
-                  //     width: "24px",
-                  //   }}
-                />
+                <img src="img/google-icon.png" alt="Google Logo" />
                 Continue with Google
               </Button>
 
               <Button
                 block
-                // icon={<AppleOutlined />}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -195,20 +179,23 @@ export default function LoginForm() {
                   boxShadow: "0 2px 12px #00000014",
                 }}
               >
-                <img
-                  src="img/apple-icon.png"
-                  alt="Apple Logo"
-                  //   style={{
-                  //     width: "24px",
-                  //   }}
-                />
+                <img src="img/apple-icon.png" alt="Apple Logo" />
                 Continue with Apple
               </Button>
             </div>
 
             <div style={{ textAlign: "center", marginTop: "24px" }}>
               Don't have an account?{" "}
-              <a style={{ color: "#336699", fontWeight: "bold" }}>Sign Up</a>
+              <a
+                href="/"
+                style={{
+                  color: "#336699",
+                  textDecorationLine: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Sign Up
+              </a>
             </div>
           </div>
         </div>
