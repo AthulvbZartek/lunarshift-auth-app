@@ -30,7 +30,7 @@ const ForgotComponent = () => {
       <div style={{ position: "absolute", top: "20px", left: "20px" }}>
         <Button
           type="link"
-          href="/login"
+          href="/"
           icon={<ArrowLeftOutlined style={{ color: "#336699" }} />}
           style={{
             display: "flex",
