@@ -187,7 +187,7 @@ export default function LoginForm() {
             <div style={{ textAlign: "center", marginTop: "24px" }}>
               Don't have an account?{" "}
               <a
-                href="/"
+                href="/sign-up"
                 style={{
                   color: "#336699",
                   textDecorationLine: "none",
