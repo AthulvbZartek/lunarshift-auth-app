@@ -19,7 +19,10 @@ const EmailVerificationCard = ({ email }: Email) => {
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Title level={3} style={{ textAlign: "center", marginBottom: "24px" }}>
+      <Title
+        level={3}
+        style={{ textAlign: "center", marginBottom: "24px", marginTop: "0" }}
+      >
         Email Verification
       </Title>
       <p

@@ -22,7 +22,7 @@ const SignUpFormProfessional = () => {
 
   const handleContinue = () => {
     // if (email.trim()) {
-      setIsVerificationSent(true);
+    setIsVerificationSent(true);
     // }
   };
 
@@ -46,7 +46,11 @@ const SignUpFormProfessional = () => {
         >
           <Title
             level={3}
-            style={{ textAlign: "center", marginBottom: "24px" }}
+            style={{
+              textAlign: "center",
+              marginBottom: "24px",
+              marginTop: "0",
+            }}
           >
             {verificationCardTitle}
           </Title>
@@ -98,11 +102,21 @@ const SignUpFormProfessional = () => {
           >
             <Title
               level={3}
-              style={{ textAlign: "center", marginBottom: "24px" }}
+              style={{
+                textAlign: "center",
+                marginBottom: "24px",
+                marginTop: "0",
+              }}
             >
               Sign Up to find work
             </Title>
-            <div style={{ textAlign: "center", marginTop: "16px" }}>
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "0",
+                marginBottom: "24px",
+              }}
+            >
               Here to hire talent?{" "}
               <a
                 href="/sign-up"

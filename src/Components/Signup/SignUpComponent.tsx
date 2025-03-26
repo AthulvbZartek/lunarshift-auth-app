@@ -63,7 +63,11 @@ export default function SignUpComponent() {
         >
           <Title
             level={3}
-            style={{ textAlign: "center", marginBottom: "24px" }}
+            style={{
+              textAlign: "center",
+              marginBottom: "24px",
+              marginTop: "0",
+            }}
           >
             Sign Up
           </Title>

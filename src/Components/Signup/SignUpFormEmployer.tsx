@@ -45,7 +45,11 @@ const SignUpFormEmployer = () => {
         >
           <Title
             level={3}
-            style={{ textAlign: "center", marginBottom: "24px" }}
+            style={{
+              textAlign: "center",
+              marginBottom: "24px",
+              marginTop: "0",
+            }}
           >
             {verificationCardTitle}
           </Title>
@@ -97,11 +101,21 @@ const SignUpFormEmployer = () => {
           >
             <Title
               level={3}
-              style={{ textAlign: "center", marginBottom: "24px" }}
+              style={{
+                textAlign: "center",
+                marginBottom: "24px",
+                marginTop: "0",
+              }}
             >
               Join as an Employer
             </Title>
-            <div style={{ textAlign: "center", marginTop: "16px" }}>
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "0",
+                marginBottom: "24px",
+              }}
+            >
               Are you a Professional?{" "}
               <a
                 href="/sign-up"
