@@ -6,11 +6,9 @@ const { Title, Paragraph } = Typography;
 const { Option } = Select;
 
 const AddSkillsComponent = () => {
-  const [selectedSkills, setSelectedSkills] = useState([
-    { id: 1, name: "Lorem - Skill 1" },
-    { id: 2, name: "Ipsum - Skill 2" },
-    { id: 3, name: "Dolor sit - Skill 3" },
-  ]);
+  const [selectedSkills, setSelectedSkills] = useState<
+    { id: number; name: string }[]
+  >([]);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -36,134 +34,130 @@ const AddSkillsComponent = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        background: "url(/img/signup-background.png)",
-        backgroundSize: "cover",
-      }}
-    >
+    <div>
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
+          padding: "20px",
         }}
       >
-        <img
-          src="img/lunarshift-logo.png"
-          alt="Lunarshift Logo"
-          style={{
-            width: "280px",
-            marginBottom: "20px",
-          }}
-        />
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "20px",
+            background: "#F6F7F9",
+            padding: "40px",
+            borderRadius: "8px",
+            width: "100%",
+            minWidth: "700px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            position: "relative",
           }}
         >
           <div
             style={{
-              background: "#F6F7F9",
-              padding: "40px",
-              borderRadius: "8px",
-              width: "100%",
-              maxWidth: "500px",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-              position: "relative",
+              display: "flex",
+              justifyContent: "space-between",
+              //   alignItems: "center",
             }}
           >
-            <div style={{ position: "absolute", top: "20px", right: "20px" }}>
-              <Button
-                type="text"
-                style={{
-                  color: "#336699",
-                  border: "1px solid #336699",
-                  borderRadius: "4px",
-                  padding: "0 15px",
-                }}
-              >
-                Skip
-              </Button>
+            <div>
+              <Title level={3} style={{ marginBottom: "8px", marginTop: "0" }}>
+                Add your skills
+              </Title>
+              <Paragraph style={{ marginBottom: "24px", color: "#161A1F" }}>
+                Help us connect you with the right jobs based on your skills
+              </Paragraph>
             </div>
-
-            <Title level={3} style={{ marginBottom: "8px" }}>
-              Add your skills
-            </Title>
-
-            <Paragraph style={{ marginBottom: "24px", color: "#666" }}>
-              Help us connect you with the right jobs based on your skills
-            </Paragraph>
-
-            <Select
-              showSearch
-              placeholder="Select your skill"
-              style={{ width: "100%", marginBottom: "20px" }}
-              value={searchValue}
-              onChange={setSearchValue}
-              onSelect={handleSkillSelect}
-              filterOption={false}
-              dropdownStyle={{ maxHeight: "200px", overflow: "auto" }}
-              suffixIcon={<span style={{ fontSize: "12px" }}>▼</span>}
-            >
-              {skillsOptions.map((skill) => (
-                <Option key={skill.id} value={skill.name}>
-                  {skill.name}
-                </Option>
-              ))}
-            </Select>
-
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                marginBottom: "24px",
-              }}
-            >
-              {selectedSkills.map((skill) => (
-                <Tag
-                  key={skill.id}
-                  closable
-                  onClose={() => handleSkillRemove(skill.id)}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: "20px",
-                    background: "white",
-                    border: "1px solid #e8e8e8",
-                    fontSize: "14px",
-                    display: "flex",
-                    alignItems: "center",
-                    marginRight: 0,
-                  }}
-                  closeIcon={<CloseOutlined style={{ fontSize: "10px" }} />}
-                >
-                  {skill.name}
-                </Tag>
-              ))}
-            </div>
-
             <Button
-              type="primary"
-              block
+              type="text"
               style={{
-                height: "40px",
-                fontSize: "16px",
-                background:
-                  "linear-gradient(to right top, #3779BC, #336699, #295985)",
+                color: "#336699",
+                border: "1px solid #336699",
+                borderRadius: "6px",
+                padding: "20px 40px",
+                backgroundColor: "white",
                 boxShadow: "0 2px 12px #00000014",
               }}
             >
-              Add Skills
+              Skip
             </Button>
           </div>
+
+          <Select
+            showSearch
+            placeholder="Select your skill"
+            style={{
+              width: "300px",
+              height: "36px",
+              marginBottom: "20px",
+              backgroundColor: "white",
+              borderRadius: "6px",
+            }}
+            variant="borderless"
+            value={searchValue}
+            onChange={setSearchValue}
+            onSelect={handleSkillSelect}
+            filterOption={false}
+            dropdownStyle={{ maxHeight: "200px", overflow: "auto" }}
+            // suffixIcon={<span style={{ fontSize: "12px" }}>▼</span>}
+          >
+            {skillsOptions.map((skill) => (
+              <Option key={skill.id} value={skill.name}>
+                {skill.name}
+              </Option>
+            ))}
+          </Select>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "10px",
+              marginBottom: "24px",
+            }}
+          >
+            {selectedSkills.map((skill) => (
+              <Tag
+                key={skill.id}
+                closable
+                onClose={() => handleSkillRemove(skill.id)}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "20px",
+                  background: "white",
+                  border: "1px solid #e8e8e8",
+                  fontSize: "14px",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: 0,
+                }}
+                closeIcon={<CloseOutlined style={{ fontSize: "10px" }} />}
+              >
+                {skill.name}
+              </Tag>
+            ))}
+          </div>
+          <Button
+            type="primary"
+            block
+            disabled={selectedSkills.length === 0}
+            style={{
+              height: "40px",
+              fontSize: "16px",
+              borderRadius: "6px",
+              width: "300px",
+              background:
+                selectedSkills.length === 0
+                  ? "#cccccc"
+                  : "linear-gradient(to right top, #3779BC, #336699, #295985)",
+              boxShadow: "0 2px 12px #00000014",
+              cursor: selectedSkills.length === 0 ? "not-allowed" : "pointer",
+              opacity: selectedSkills.length === 0 ? 0.6 : 1,
+            }}
+          >
+            Add Skills
+          </Button>
         </div>
       </div>
     </div>

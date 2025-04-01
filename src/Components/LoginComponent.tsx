@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Typography, Button, Input, Divider } from "antd";
+import { motion } from "framer-motion";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -105,20 +106,22 @@ export default function LoginForm() {
               />
             </div>
 
-            <Button
-              type="primary"
-              block
-              style={{
-                height: "40px",
-                fontSize: "16px",
-                background:
-                  "linear-gradient(to right top, #3779BC, #336699, #295985)",
-                marginBottom: "16px",
-                boxShadow: "0 2px 12px #00000014",
-              }}
-            >
-              Login
-            </Button>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                type="primary"
+                block
+                style={{
+                  height: "40px",
+                  fontSize: "16px",
+                  background:
+                    "linear-gradient(to right top, #3779BC, #336699, #295985)",
+                  marginBottom: "16px",
+                  boxShadow: "0 2px 12px #00000014",
+                }}
+              >
+                Login
+              </Button>
+            </motion.div>
 
             <div style={{ textAlign: "center", marginBottom: "16px" }}>
               <a
@@ -136,56 +139,70 @@ export default function LoginForm() {
             <div
               style={{ display: "flex", flexDirection: "column", gap: "12px" }}
             >
-              <Button
-                block
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "16px",
-                  height: "40px",
-                  borderRadius: "10px",
-                  borderColor: "#fff",
-                  boxShadow: "0 2px 12px #00000014",
-                }}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <img src="img/linkedin-icon.png" alt="Linkedin Logo" />
-                Continue with LinkedIn
-              </Button>
-
-              <Button
-                block
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "40px",
-                  fontSize: "16px",
-                  borderRadius: "10px",
-                  borderColor: "#fff",
-                  boxShadow: "0 2px 12px #00000014",
-                }}
+                <Button
+                  block
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "16px",
+                    height: "40px",
+                    borderRadius: "10px",
+                    borderColor: "#fff",
+                    boxShadow: "0 2px 12px #00000014",
+                 
+                  }}
+                >
+                  <img src="img/linkedin-icon.png" alt="Linkedin Logo" />
+                  Continue with LinkedIn
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <img src="img/google-icon.png" alt="Google Logo" />
-                Continue with Google
-              </Button>
-
-              <Button
-                block
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "40px",
-                  fontSize: "16px",
-                  borderRadius: "10px",
-                  borderColor: "#fff",
-                  boxShadow: "0 2px 12px #00000014",
-                }}
+                <Button
+                  block
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "40px",
+                    fontSize: "16px",
+                    borderRadius: "10px",
+                    borderColor: "#fff",
+                    boxShadow: "0 2px 12px #00000014",
+                  }}
+                >
+                  <img src="img/google-icon.png" alt="Google Logo" />
+                  Continue with Google
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <img src="img/apple-icon.png" alt="Apple Logo" />
-                Continue with Apple
-              </Button>
+                <Button
+                  block
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "40px",
+                    fontSize: "16px",
+                    borderRadius: "10px",
+                    borderColor: "#fff",
+                    boxShadow: "0 2px 12px #00000014",
+                  }}
+                >
+                  <img src="img/apple-icon.png" alt="Apple Logo" />
+                  Continue with Apple
+                </Button>
+              </motion.div>
             </div>
 
             <div style={{ textAlign: "center", marginTop: "24px" }}>
