@@ -1,14 +1,41 @@
-import { useState } from "react";
-import { Typography, Button, Input, Divider } from "antd";
+import { Typography, Button, Input, Divider, Form } from "antd";
 import { motion } from "framer-motion";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
 const { Title } = Typography;
 
+type FieldType = {
+  email: string;
+  password: string;
+};
+
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  //   const [showPassword, setShowPassword] = useState(false);
+  const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onFinish = async (values: FieldType) => {
+    try {
+      setIsSubmitting(true);
+      // Here you would typically make an API call to your backend
+      console.log("Form submitted:", values);
+      // Example API call:
+      // const response = await fetch('/api/login', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(values),
+      // });
+      // const result = await response.json();
+      // Handle the response as needed
+      window.location.href = "https://lunarshift-shell-app.vercel.app/";
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div
@@ -69,7 +96,6 @@ export default function LoginForm() {
             }}
           >
             <Title
-              level={3}
               style={{
                 textAlign: "center",
                 marginBottom: "24px",
@@ -79,49 +105,75 @@ export default function LoginForm() {
               Login
             </Title>
 
-            <div style={{ marginBottom: "16px" }}>
-              <Input
-                placeholder="Enter your email"
-                variant="borderless"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{ height: "40px", backgroundColor: "white" }}
-              />
-            </div>
-
-            <div style={{ marginBottom: "24px" }}>
-              <Input.Password
-                placeholder="Password"
-                value={password}
-                variant="borderless"
-                onChange={(e) => setPassword(e.target.value)}
-                iconRender={(visible) =>
-                  visible ? (
-                    <EyeOutlined style={{ color: "#336699" }} />
-                  ) : (
-                    <EyeInvisibleOutlined style={{ color: "#336699" }} />
-                  )
-                }
-                style={{ height: "40px", backgroundColor: "white" }}
-              />
-            </div>
-
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                type="primary"
-                block
-                style={{
-                  height: "40px",
-                  fontSize: "16px",
-                  background:
-                    "linear-gradient(to right top, #3779BC, #336699, #295985)",
-                  marginBottom: "16px",
-                  boxShadow: "0 2px 12px #00000014",
-                }}
+            <Form
+              form={form}
+              name="login"
+              onFinish={onFinish}
+              autoComplete="off"
+              layout="vertical"
+            >
+              <Form.Item<FieldType>
+                name="email"
+                rules={[
+                  { required: true, message: "Please enter your email!" },
+                  { type: "email", message: "Please enter a valid email!" },
+                ]}
               >
-                Login
-              </Button>
-            </motion.div>
+                <Input
+                  placeholder="Enter your email"
+                  variant="borderless"
+                  style={{ height: "40px", backgroundColor: "white" }}
+                />
+              </Form.Item>
+
+              <Form.Item<FieldType>
+                name="password"
+                rules={[
+                  { required: true, message: "Please enter your password!" },
+                  {
+                    min: 8,
+                    message: "Password must be at least 8 characters!",
+                  },
+                ]}
+              >
+                <Input.Password
+                  placeholder="Password"
+                  variant="borderless"
+                  iconRender={(visible) =>
+                    visible ? (
+                      <EyeOutlined style={{ color: "#336699" }} />
+                    ) : (
+                      <EyeInvisibleOutlined style={{ color: "#336699" }} />
+                    )
+                  }
+                  style={{ height: "40px", backgroundColor: "white" }}
+                />
+              </Form.Item>
+
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    block
+                    loading={isSubmitting}
+                    style={{
+                      height: "40px",
+                      fontSize: "16px",
+                      background:
+                        "linear-gradient(to right top, #3779BC, #336699, #295985)",
+                      marginBottom: "16px",
+                      boxShadow: "0 2px 12px #00000014",
+                    }}
+                  >
+                    {isSubmitting ? "Logging in..." : "Login"}
+                  </Button>
+                </Form.Item>
+              </motion.div>
+            </Form>
 
             <div style={{ textAlign: "center", marginBottom: "16px" }}>
               <a
@@ -154,7 +206,6 @@ export default function LoginForm() {
                     borderRadius: "10px",
                     borderColor: "#fff",
                     boxShadow: "0 2px 12px #00000014",
-                 
                   }}
                 >
                   <img src="img/linkedin-icon.png" alt="Linkedin Logo" />
@@ -203,20 +254,6 @@ export default function LoginForm() {
                   Continue with Apple
                 </Button>
               </motion.div>
-            </div>
-
-            <div style={{ textAlign: "center", marginTop: "24px" }}>
-              Don't have an account?{" "}
-              <a
-                href="/sign-up"
-                style={{
-                  color: "#336699",
-                  textDecorationLine: "none",
-                  fontWeight: "bold",
-                }}
-              >
-                Sign Up
-              </a>
             </div>
           </div>
         </div>
