@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 type FieldType = {
   email: string;
@@ -254,6 +254,14 @@ export default function LoginForm() {
                   Continue with Apple
                 </Button>
               </motion.div>
+            </div>
+            <div style={{ textAlign: "center", marginTop: "16px" }}>
+              <Text style={{ color: "#161A1F",fontSize:"16px" }}>
+                Don't have an account?{" "}
+                <a href="/sign-up" style={{ color: "#336699",fontWeight:"600" }}>
+                  Sign up
+                </a>
+              </Text>
             </div>
           </div>
         </div>

@@ -1,28 +1,35 @@
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Divider, Input, Typography } from "antd";
+import { Button, Checkbox, Divider, Form, Input, Typography } from "antd";
 import { useState } from "react";
 import EmailVerificationCard from "../EmailVerificationCard";
 
 const { Title } = Typography;
 
+type FieldType = {
+  orgName: string;
+  email: string;
+  mobile: string;
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+};
+
 const SignUpFormEmployer = () => {
-  // Form fields
-  const [orgName, setOrgName] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [form] = Form.useForm<FieldType>();
   const [verificationNumber, setVerificationNumber] = useState("");
   const [showVerificationCard, setShowVerificationCard] = useState(false);
   const [verificationCardTitle, setVerificationCardTitle] = useState("");
-
   const [isVerificationSent, setIsVerificationSent] = useState(false);
 
-  const handleContinue = () => {
-    // if (email.trim()) {
-    setIsVerificationSent(true);
-    // }
+  const handleContinue = async () => {
+    try {
+      await form.validateFields();
+      const values = form.getFieldsValue();
+      console.log('Form values:', values);
+      setIsVerificationSent(true);
+    } catch (error) {
+      console.error('Validation failed:', error);
+    }
   };
 
   const handleSocialClick = () => {
@@ -216,112 +223,146 @@ const SignUpFormEmployer = () => {
             or
           </Divider>
 
-          <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
-            <div style={{ flex: 1 }}>
-              <Input
-                placeholder="Organization name"
-                value={orgName}
-                variant="borderless"
-                onChange={(e) => setOrgName(e.target.value)}
-                style={{ height: "40px", backgroundColor: "white" }}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <Input
-                placeholder="Email ID"
-                value={email}
-                variant="borderless"
-                onChange={(e) => setEmail(e.target.value)}
-                style={{ height: "40px", backgroundColor: "white" }}
-              />
-            </div>
-          </div>
-
-          <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
-            <div style={{ flex: 1 }}>
-              <Input
-                placeholder="Mobile number"
-                value={mobile}
-                variant="borderless"
-                onChange={(e) => setMobile(e.target.value)}
-                style={{ height: "40px", backgroundColor: "white" }}
-              />
+          <Form form={form} layout="vertical" style={{ width: "100%" }}>
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+              <Form.Item
+                name="orgName"
+                style={{ flex: 1, marginBottom: 0 }}
+                rules={[{ required: true, message: "Please enter organization name" }]}
+              >
+                <Input
+                  placeholder="Organization name"
+                  variant="borderless"
+                  style={{ height: "40px", backgroundColor: "white" }}
+                />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                style={{ flex: 1, marginBottom: 0 }}
+                rules={[
+                  { required: true, message: "Please enter your email" },
+                  { type: "email", message: "Please enter a valid email" }
+                ]}
+              >
+                <Input
+                  placeholder="Email ID"
+                  variant="borderless"
+                  style={{ height: "40px", backgroundColor: "white" }}
+                />
+              </Form.Item>
             </div>
 
-            <div style={{ flex: 1 }}>
-              <Input.Password
-                placeholder="Password"
-                value={password}
-                variant="borderless"
-                onChange={(e) => setPassword(e.target.value)}
-                iconRender={(visible) =>
-                  visible ? (
-                    <EyeOutlined style={{ color: "#336699" }} />
-                  ) : (
-                    <EyeInvisibleOutlined style={{ color: "#336699" }} />
-                  )
-                }
-                style={{ height: "40px", backgroundColor: "white" }}
-              />
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+              <Form.Item
+                name="mobile"
+                style={{ flex: 1, marginBottom: 0 }}
+                rules={[
+                  { required: true, message: "Please enter your mobile number" },
+                  { pattern: /^[0-9]{10}$/, message: "Please enter a valid 10-digit mobile number" }
+                ]}
+              >
+                <Input
+                  placeholder="Mobile number"
+                  variant="borderless"
+                  style={{ height: "40px", backgroundColor: "white" }}
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="password"
+                style={{ flex: 1, marginBottom: 0 }}
+                rules={[
+                  { required: true, message: "Please enter your password" },
+                  { min: 8, message: "Password must be at least 8 characters" }
+                ]}
+              >
+                <Input.Password
+                  placeholder="Password"
+                  variant="borderless"
+                  iconRender={(visible) =>
+                    visible ? (
+                      <EyeOutlined style={{ color: "#336699" }} />
+                    ) : (
+                      <EyeInvisibleOutlined style={{ color: "#336699" }} />
+                    )
+                  }
+                  style={{ height: "40px", backgroundColor: "white" }}
+                />
+              </Form.Item>
             </div>
-          </div>
 
-          <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
-            <div style={{ flex: 1 }}>
-              <Input.Password
-                placeholder="Re-enter password"
-                value={confirmPassword}
-                variant="borderless"
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                iconRender={(visible) =>
-                  visible ? (
-                    <EyeOutlined style={{ color: "#336699" }} />
-                  ) : (
-                    <EyeInvisibleOutlined style={{ color: "#336699" }} />
-                  )
-                }
-                style={{ height: "40px", backgroundColor: "white" }}
-              />
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+              <Form.Item
+                name="confirmPassword"
+                style={{ flex: 1, marginBottom: 0 }}
+                dependencies={['password']}
+                rules={[
+                  { required: true, message: "Please confirm your password" },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('The two passwords do not match'));
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password
+                  placeholder="Re-enter password"
+                  variant="borderless"
+                  iconRender={(visible) =>
+                    visible ? (
+                      <EyeOutlined style={{ color: "#336699" }} />
+                    ) : (
+                      <EyeInvisibleOutlined style={{ color: "#336699" }} />
+                    )
+                  }
+                  style={{ height: "40px", backgroundColor: "white" }}
+                />
+              </Form.Item>
+
+              <div style={{ flex: 1 }}></div>
             </div>
 
-            <div style={{ flex: 1 }}></div>
-          </div>
-
-          <div style={{ marginBottom: "24px", textAlign: "center" }}>
-            <Checkbox
-              checked={agreeToTerms}
-              onChange={(e) => setAgreeToTerms(e.target.checked)}
-              style={{
-                fontSize: "16px",
-              }}
+            <Form.Item
+              name="agreeToTerms"
+              valuePropName="checked"
+              rules={[{
+                validator: (_, value) =>
+                  value ? Promise.resolve() : Promise.reject(new Error('Please accept the terms and conditions')),
+              }]}
+              style={{ marginBottom: "24px", textAlign: "center" }}
             >
-              By continuing you accept our{" "}
-              <a href="/terms" style={{ color: "#336699" }}>
-                Terms & Conditions
-              </a>{" "}
-              and{" "}
-              <a href="/privacy" style={{ color: "#336699" }}>
-                Privacy Policy
-              </a>
-            </Checkbox>
-          </div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              type="primary"
-              onClick={handleContinue}
-              style={{
-                height: "40px",
-                minWidth: "260px",
-                fontSize: "16px",
-                background:
-                  "linear-gradient(to right top, #3779BC, #336699, #295985)",
-                marginBottom: "16px",
-                boxShadow: "0 2px 12px #00000014",
-              }}
-            >
-              Sign Up
-            </Button>
-          </div>
+              <Checkbox style={{ fontSize: "16px" }}>
+                By continuing you accept our{" "}
+                <a href="/terms" style={{ color: "#336699" }}>
+                  Terms & Conditions
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" style={{ color: "#336699" }}>
+                  Privacy Policy
+                </a>
+              </Checkbox>
+            </Form.Item>
+
+            <Form.Item style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
+              <Button
+                type="primary"
+                onClick={handleContinue}
+                style={{
+                  height: "40px",
+                  minWidth: "260px",
+                  fontSize: "16px",
+                  background:
+                    "linear-gradient(to right top, #3779BC, #336699, #295985)",
+                  boxShadow: "0 2px 12px #00000014",
+                }}
+              >
+                Sign Up
+              </Button>
+            </Form.Item>
+          </Form>
 
           <div style={{ textAlign: "center", marginTop: "16px" }}>
             Already have an account?{" "}
@@ -338,7 +379,7 @@ const SignUpFormEmployer = () => {
           </div>
         </div>
       ) : (
-        <EmailVerificationCard email={email} />
+        <EmailVerificationCard email={form.getFieldValue('email')} />
       )}
     </>
   );
