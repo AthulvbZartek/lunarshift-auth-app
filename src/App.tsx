@@ -6,6 +6,7 @@ import SignUpPage from "./pages/sign-up";
 import IdVerification from "./pages/id-verification";
 import { ConfigProvider } from "antd";
 import { customTheme } from "./theme";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/id-verification" element={<IdVerification />} />
         </Routes>
       </BrowserRouter>
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </ConfigProvider>
   );
 }
