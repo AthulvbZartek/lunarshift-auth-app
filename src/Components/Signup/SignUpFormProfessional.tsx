@@ -2,6 +2,8 @@ import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Divider, Form, Input, Typography } from "antd";
 import { useState } from "react";
 import EmailVerificationCard from "../EmailVerificationCard";
+import { useRegisterHooks } from "../../api/Register/hook";
+import { RegisterUserPayload } from "../../interface/Register";
 
 const { Title } = Typography;
 
@@ -22,16 +24,31 @@ const SignUpFormProfessional = () => {
   const [verificationCardTitle, setVerificationCardTitle] = useState("");
   const [isVerificationSent, setIsVerificationSent] = useState(false);
 
-  const handleContinue = async () => {
-    try {
-      await form.validateFields();
-      const values = form.getFieldsValue();
-      console.log('Form values:', values);
-      setIsVerificationSent(true);
-    } catch (error) {
-      console.error('Validation failed:', error);
-    }
-  };
+  const { mutate: RegisterUser } = useRegisterHooks();
+
+  function handleContinue(values: FieldType) {
+    const payload: RegisterUserPayload = {
+      email: values.email,
+      password: values.password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      mobileNumber: values.mobile,
+      role: "professional",
+    };
+    RegisterUser(payload);
+    // console.log('payload', payload)
+  }
+
+  // const handleContinue = async () => {
+  //   try {
+  //     await form.validateFields();
+  //     const values = form.getFieldsValue();
+  //     console.log('Form values:', values);
+  //     setIsVerificationSent(true);
+  //   } catch (error) {
+  //     console.error('Validation failed:', error);
+  //   }
+  // };
 
   const handleSocialClick = () => {
     setVerificationCardTitle(`Enter Mobile Number`);
@@ -360,7 +377,7 @@ const SignUpFormProfessional = () => {
             <Form.Item style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
               <Button
                 type="primary"
-                onClick={handleContinue}
+                onClick={() => handleContinue(form.getFieldsValue())}
                 style={{
                   height: "40px",
                   minWidth: "260px",

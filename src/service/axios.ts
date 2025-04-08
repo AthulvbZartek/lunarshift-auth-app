@@ -1,8 +1,8 @@
-// import { LocalStorage } from "@/utility/localstorage";
 import axios, { AxiosInstance } from "axios";
 import { LocalStorage } from "../utility/localstorage";
 
-const BaseUrl = process.env.NEXT_PUBLIC_USER_API_BASE_URL;
+const BaseUrl = process.env.REACT_APP_API_BASE_URL || "https://authservicemicroservice.onrender.com/api";
+console.log('BaseUrl:', BaseUrl, 'Environment:', process.env.REACT_APP_API_BASE_URL);
 
 export class Axios {
   private static instance: AxiosInstance;
