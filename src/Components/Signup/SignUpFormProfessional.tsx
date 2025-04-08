@@ -33,22 +33,11 @@ const SignUpFormProfessional = () => {
       firstName: values.firstName,
       lastName: values.lastName,
       mobileNumber: values.mobile,
-      role: "professional",
+      role: "Professional",
     };
     RegisterUser(payload);
-    // console.log('payload', payload)
   }
 
-  // const handleContinue = async () => {
-  //   try {
-  //     await form.validateFields();
-  //     const values = form.getFieldsValue();
-  //     console.log('Form values:', values);
-  //     setIsVerificationSent(true);
-  //   } catch (error) {
-  //     console.error('Validation failed:', error);
-  //   }
-  // };
 
   const handleSocialClick = () => {
     setVerificationCardTitle(`Enter Mobile Number`);

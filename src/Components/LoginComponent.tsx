@@ -2,6 +2,8 @@ import { Typography, Button, Input, Divider, Form } from "antd";
 import { motion } from "framer-motion";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { useLoginHooks } from "../api/Login/hook";
+import { LoginUserPayload } from "../interface/Login";
 
 const { Title, Text } = Typography;
 
@@ -14,22 +16,17 @@ export default function LoginForm() {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { mutate: LoginUser } = useLoginHooks();
+
   const onFinish = async (values: FieldType) => {
     try {
       setIsSubmitting(true);
-      // Here you would typically make an API call to your backend
-      console.log("Form submitted:", values);
-      // Example API call:
-      // const response = await fetch('/api/login', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(values),
-      // });
-      // const result = await response.json();
-      // Handle the response as needed
-      window.location.href = "https://lunarshift-shell-app.vercel.app/";
+      const payload: LoginUserPayload = {
+        email: values.email,
+        password: values.password
+      };
+      LoginUser(payload);
+      // window.location.href = "https://lunarshift-shell-app.vercel.app/";
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -100,6 +97,7 @@ export default function LoginForm() {
                 textAlign: "center",
                 marginBottom: "24px",
                 marginTop: "0",
+                fontSize: "24px",
               }}
             >
               Login

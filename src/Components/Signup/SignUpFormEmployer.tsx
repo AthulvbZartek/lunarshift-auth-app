@@ -2,6 +2,8 @@ import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Divider, Form, Input, Typography } from "antd";
 import { useState } from "react";
 import EmailVerificationCard from "../EmailVerificationCard";
+import { useRegisterHooks } from "../../api/Register/hook";
+import { RegisterUserPayload } from "../../interface/Register";
 
 const { Title } = Typography;
 
@@ -21,12 +23,21 @@ const SignUpFormEmployer = () => {
   const [verificationCardTitle, setVerificationCardTitle] = useState("");
   const [isVerificationSent, setIsVerificationSent] = useState(false);
 
+  const { mutate: RegisterUser } = useRegisterHooks();
+
   const handleContinue = async () => {
     try {
       await form.validateFields();
       const values = form.getFieldsValue();
-      console.log('Form values:', values);
-      setIsVerificationSent(true);
+      const payload: RegisterUserPayload = {
+        email: values.email,
+        password: values.password,
+        firstName: values.orgName,
+        mobileNumber: values.mobile,
+        role: "Employer"
+      };
+      RegisterUser(payload);
+      // setIsVerificationSent(true);
     } catch (error) {
       console.error('Validation failed:', error);
     }
