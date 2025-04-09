@@ -1,19 +1,31 @@
-"use client";
-
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { Button, Input, Typography } from "antd";
+import { Button, Input, Typography, Form } from "antd";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import EmailVerificationCard from "./EmailVerificationCard";
+import { useForgotPasswordHooks } from "../api/ForgotPassword/hook";
+import { ForgotPasswordPayload } from "../api/ForgotPassword/Api";
 
 const { Title } = Typography;
 
+type FieldType = {
+  email: string;
+};
+
 const ForgotComponent = () => {
-  const [email, setEmail] = useState("");
+  const [form] = Form.useForm();
   const [isVerificationSent, setIsVerificationSent] = useState(false);
 
-  const handleContinue = () => {
-    if (email.trim()) {
-      setIsVerificationSent(true);
+  const { mutate: forgotPassword } = useForgotPasswordHooks();
+
+  const onFinish = async (values: FieldType) => {
+    try {
+      const payload: ForgotPasswordPayload = {
+        email: values.email,
+      };
+      forgotPassword(payload);
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
   return (
@@ -77,11 +89,11 @@ const ForgotComponent = () => {
               }}
             >
               <Title
-                level={3}
                 style={{
                   textAlign: "center",
                   marginBottom: "24px",
-                  margin: "0",
+                  marginTop: "0",
+                  fontSize: "24px",
                 }}
               >
                 Forgot Password
@@ -95,34 +107,53 @@ const ForgotComponent = () => {
                 Enter your registered email
               </p>
 
-              <div style={{ marginBottom: "16px" }}>
-                <Input
-                  placeholder="Enter your email"
-                  variant="borderless"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={{ height: "40px", backgroundColor: "white" }}
-                />
-              </div>
-
-              <Button
-                type="primary"
-                block
-                onClick={handleContinue}
-                style={{
-                  height: "40px",
-                  fontSize: "16px",
-                  background:
-                    "linear-gradient(to right top, #3779BC, #336699, #295985)",
-                  marginBottom: "16px",
-                  boxShadow: "0 2px 12px #00000014",
-                }}
+              <Form
+                form={form}
+                name="forgot-password"
+                onFinish={onFinish}
+                autoComplete="off"
+                layout="vertical"
               >
-                Continue
-              </Button>
+                <Form.Item<FieldType>
+                  name="email"
+                  rules={[
+                    { required: true, message: "Please enter your email!" },
+                    { type: "email", message: "Please enter a valid email!" },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter your email"
+                    variant="borderless"
+                    style={{ height: "40px", backgroundColor: "white" }}
+                  />
+                </Form.Item>
+
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      block
+                      style={{
+                        height: "40px",
+                        fontSize: "16px",
+                        background:
+                          "linear-gradient(to right top, #3779BC, #336699, #295985)",
+                        marginBottom: "16px",
+                        boxShadow: "0 2px 12px #00000014",
+                      }}
+                    >
+                      Continue
+                    </Button>
+                  </Form.Item>
+                </motion.div>
+              </Form>
             </div>
           ) : (
-            <EmailVerificationCard email={email} />
+            <EmailVerificationCard email={form.getFieldValue("email")} />
           )}
         </div>
       </div>
