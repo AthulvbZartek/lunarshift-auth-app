@@ -38,7 +38,7 @@ export class Axios {
         // Check if the user is not authenticated and add redirection logic
         if (error?.response?.status === 401 && !refresh_token) {
           // User is not authenticated, redirect to the login page
-          window.location.href = "/login";
+          window.location.href = "/";
           return Promise.reject(error);
         }
         if (
@@ -70,7 +70,7 @@ export class Axios {
             } else {
               // remove authToken from localStorage
               LocalStorage?.clear();
-              window.location.href = "/login";
+              window.location.href = "/";
             }
             const UserToken = LocalStorage.getItem("accessToken");
 
@@ -79,7 +79,7 @@ export class Axios {
             return axios(originalRequest);
           } catch (error) {
             LocalStorage.clear();
-            window.location.href = "/login";
+            window.location.href = "/";
             return Promise.reject(error);
           }
         }

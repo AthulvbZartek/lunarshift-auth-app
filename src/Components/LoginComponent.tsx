@@ -1,38 +1,104 @@
+import React, { useState, useCallback } from "react";
 import { Typography, Button, Input, Divider, Form } from "antd";
 import { motion } from "framer-motion";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
-import { useState } from "react";
 import { useLoginHooks } from "../api/Login/hook";
 import { LoginUserPayload } from "../interface/Login";
+import styles from "./LoginForm.module.css";
 
 const { Title, Text } = Typography;
 
-type FieldType = {
+interface FieldType {
   email: string;
   password: string;
-};
+}
 
-export default function LoginForm() {
-  const [form] = Form.useForm();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+interface SocialLoginButtonProps {
+  icon: string;
+  platform: string;
+}
 
-  const { mutate: LoginUser } = useLoginHooks();
+const LoginForm: React.FC = () => {
+  const [form] = Form.useForm<FieldType>();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
-  const onFinish = async (values: FieldType) => {
-    try {
-      setIsSubmitting(true);
-      const payload: LoginUserPayload = {
-        email: values.email,
-        password: values.password
-      };
-      LoginUser(payload);
-      // window.location.href = "https://lunarshift-shell-app.vercel.app/";
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const { mutate: loginUser } = useLoginHooks();
+
+  // Memoized event handlers with useCallback
+  const clearError = useCallback((): void => {
+    setErrorMessage("");
+    setValidationErrors([]);
+  }, []);
+
+  // Custom form validator to collect all validation errors
+  const validateFields = (): boolean | string => {
+    const { email, password } = form.getFieldsValue();
+
+    const isValidEmail = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPassword = password && password.length >= 8;
+
+    const isValid = isValidEmail && isValidPassword;
+
+    setErrorMessage(isValid ? "" : "Invalid credentials");
+    setValidationErrors([]);
+
+    return isValid;
   };
+
+  const onFinish = useCallback(
+    async (values: FieldType): Promise<void> => {
+      try {
+        if (!validateFields()) {
+          return;
+        }
+
+        setIsSubmitting(true);
+        clearError();
+
+        const payload: LoginUserPayload = {
+          email: values.email,
+          password: values.password,
+        };
+
+        loginUser(payload, {
+          onError: (error: unknown): void => {
+            setErrorMessage("Invalid credentials");
+            console.error("Login error:", error);
+          },
+          onSuccess: (): void => {
+            // Handle successful login here
+            // window.location.href = "https://lunarshift-shell-app.vercel.app/";
+          },
+        });
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        setErrorMessage("Invalid credentials");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loginUser, clearError]
+  );
+
+  // Check for field changes to clear errors on edit
+  const handleFieldChange = useCallback(() => {
+    clearError();
+  }, [clearError]);
+
+  // Separate component for social buttons to improve readability
+  const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
+    icon,
+    platform,
+  }) => (
+    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      <Button block className={styles.socialButton}>
+        <img src={`img/${icon}`} alt={`${platform} Logo`} />
+        Continue with {platform}
+      </Button>
+    </motion.div>
+  );
 
   return (
     <div
@@ -45,63 +111,41 @@ export default function LoginForm() {
         backgroundSize: "cover",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          width: "100%",
-          maxWidth: "1100px",
-          justifyContent: "center",
-        }}
-      >
+      <div className={styles.wrapper}>
         {/* Logo section - hidden on mobile */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            flex: "1 1 50%",
-            padding: "20px",
-          }}
-          className="logo-container"
-        >
+        <div className={`${styles.logoContainer} logo-container`}>
           <img
             src="img/lunarshift-logo.png"
             alt="Lunarshift Logo"
-            style={{
-              width: "400px",
-            }}
+            className={styles.logo}
           />
         </div>
 
         {/* Form section */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flex: "1 1 50%",
-            padding: "20px",
-          }}
-        >
-          <div
-            style={{
-              background: "#F6F7F9",
-              padding: "40px 60px",
-              borderRadius: "8px",
-              width: "100%",
-              maxWidth: "280px",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-            }}
-          >
+        <div className={styles.formContainer}>
+          <div className={styles.formWrapper}>
             <Title
-              style={{
-                textAlign: "center",
-                marginBottom: "24px",
-                marginTop: "0",
-                fontSize: "24px",
-              }}
+              className={styles.formTitle}
+              style={{ fontSize: "24px", marginBottom: "18px" }}
             >
               Login
             </Title>
+
+            {/* Error messages display area below title */}
+            <div className={styles.errorContainer}>
+              {errorMessage && (
+                <Text className={styles.errorMessage}>{errorMessage}</Text>
+              )}
+              {validationErrors.length > 0 && (
+                <div className={styles.validationErrors}>
+                  {validationErrors.map((error, index) => (
+                    <Text key={index} className={styles.errorMessage}>
+                      {error}
+                    </Text>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <Form
               form={form}
@@ -109,42 +153,28 @@ export default function LoginForm() {
               onFinish={onFinish}
               autoComplete="off"
               layout="vertical"
+              onValuesChange={handleFieldChange}
             >
-              <Form.Item<FieldType>
-                name="email"
-                rules={[
-                  { required: true, message: "Please enter your email!" },
-                  { type: "email", message: "Please enter a valid email!" },
-                ]}
-              >
+              <Form.Item name="email" noStyle>
                 <Input
                   placeholder="Enter your email"
                   variant="borderless"
-                  style={{ height: "40px", backgroundColor: "white" }}
+                  className={styles.input}
                 />
               </Form.Item>
 
-              <Form.Item<FieldType>
-                name="password"
-                rules={[
-                  { required: true, message: "Please enter your password!" },
-                  {
-                    min: 8,
-                    message: "Password must be at least 8 characters!",
-                  },
-                ]}
-              >
+              <Form.Item name="password" noStyle>
                 <Input.Password
                   placeholder="Password"
                   variant="borderless"
-                  iconRender={(visible) =>
+                  iconRender={(visible: boolean): React.ReactNode =>
                     visible ? (
                       <EyeOutlined style={{ color: "#336699" }} />
                     ) : (
                       <EyeInvisibleOutlined style={{ color: "#336699" }} />
                     )
                   }
-                  style={{ height: "40px", backgroundColor: "white" }}
+                  className={styles.input}
                 />
               </Form.Item>
 
@@ -158,13 +188,11 @@ export default function LoginForm() {
                     htmlType="submit"
                     block
                     loading={isSubmitting}
-                    style={{
-                      height: "40px",
-                      fontSize: "16px",
-                      background:
-                        "linear-gradient(to right top, #3779BC, #336699, #295985)",
-                      marginBottom: "16px",
-                      boxShadow: "0 2px 12px #00000014",
+                    className={styles.loginButton}
+                    onClick={() => {
+                      if (!isSubmitting) {
+                        validateFields();
+                      }
                     }}
                   >
                     {isSubmitting ? "Logging in..." : "Login"}
@@ -173,90 +201,27 @@ export default function LoginForm() {
               </motion.div>
             </Form>
 
-            <div style={{ textAlign: "center", marginBottom: "16px" }}>
-              <a
-                href="/forgot-password"
-                style={{
-                  color: "#336699",
-                }}
-              >
+            <div className={styles.forgotPasswordContainer}>
+              <a href="/forgot-password" className={styles.forgotPasswordLink}>
                 Forgot Password
               </a>
             </div>
 
             <Divider plain>or</Divider>
 
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-            >
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  block
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                    height: "40px",
-                    borderRadius: "10px",
-                    borderColor: "#fff",
-                    boxShadow: "0 2px 12px #00000014",
-                  }}
-                >
-                  <img src="img/linkedin-icon.png" alt="Linkedin Logo" />
-                  Continue with LinkedIn
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  block
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "40px",
-                    fontSize: "16px",
-                    borderRadius: "10px",
-                    borderColor: "#fff",
-                    boxShadow: "0 2px 12px #00000014",
-                  }}
-                >
-                  <img src="img/google-icon.png" alt="Google Logo" />
-                  Continue with Google
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  block
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "40px",
-                    fontSize: "16px",
-                    borderRadius: "10px",
-                    borderColor: "#fff",
-                    boxShadow: "0 2px 12px #00000014",
-                  }}
-                >
-                  <img src="img/apple-icon.png" alt="Apple Logo" />
-                  Continue with Apple
-                </Button>
-              </motion.div>
+            <div className={styles.socialButtonsContainer}>
+              <SocialLoginButton icon="linkedin-icon.png" platform="LinkedIn" />
+              <SocialLoginButton icon="google-icon.png" platform="Google" />
+              <SocialLoginButton icon="apple-icon.png" platform="Apple" />
             </div>
-            <div style={{ textAlign: "center", marginTop: "16px" }}>
-              <Text style={{ color: "#161A1F",fontSize:"16px" }}>
+
+            <div className={styles.signupContainer}>
+              <Text className={styles.signupText}>
                 Don't have an account?{" "}
-                <a href="/sign-up" style={{ color: "#336699",fontWeight:"600" }}>
+                <a
+                  href="/sign-up"
+                  style={{ color: "#336699", fontWeight: 600 }}
+                >
                   Sign up
                 </a>
               </Text>
@@ -266,4 +231,6 @@ export default function LoginForm() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginForm;
