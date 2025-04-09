@@ -23,10 +23,13 @@ const SignUpFormProfessional = () => {
   const [showVerificationCard, setShowVerificationCard] = useState(false);
   const [verificationCardTitle, setVerificationCardTitle] = useState("");
   const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const { mutate: RegisterUser } = useRegisterHooks();
+  const { mutate: RegisterUser } = useRegisterHooks(setIsVerificationSent);
 
   function handleContinue(values: FieldType) {
+    if (!termsAccepted) return;
+    
     const payload: RegisterUserPayload = {
       email: values.email,
       password: values.password,
@@ -37,7 +40,6 @@ const SignUpFormProfessional = () => {
     };
     RegisterUser(payload);
   }
-
 
   const handleSocialClick = () => {
     setVerificationCardTitle(`Enter Mobile Number`);
@@ -345,13 +347,12 @@ const SignUpFormProfessional = () => {
             <Form.Item
               name="agreeToTerms"
               valuePropName="checked"
-              rules={[{
-                validator: (_, value) =>
-                  value ? Promise.resolve() : Promise.reject(new Error('Please accept the terms and conditions')),
-              }]}
               style={{ marginBottom: "24px", textAlign: "center" }}
             >
-              <Checkbox style={{ fontSize: "16px" }}>
+              <Checkbox 
+                style={{ fontSize: "16px" }}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              >
                 By continuing you accept our{" "}
                 <a href="/terms" style={{ color: "#336699" }}>
                   Terms & Conditions
@@ -367,6 +368,7 @@ const SignUpFormProfessional = () => {
               <Button
                 type="primary"
                 onClick={() => handleContinue(form.getFieldsValue())}
+                disabled={!termsAccepted}
                 style={{
                   height: "40px",
                   minWidth: "260px",
@@ -374,6 +376,7 @@ const SignUpFormProfessional = () => {
                   background:
                     "linear-gradient(to right top, #3779BC, #336699, #295985)",
                   boxShadow: "0 2px 12px #00000014",
+                  opacity: termsAccepted ? 1 : 0.5,
                 }}
               >
                 Sign Up

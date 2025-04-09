@@ -5,12 +5,12 @@ import { RegisterUser } from "./api";
 import { RegisterUserPayload } from "../../interface/Register";
 
 
-export const useRegisterHooks = () => {
+export const useRegisterHooks = (setIsVerificationSent: (value: boolean) => void) => {
 
   return useMutation({
     mutationFn: (payload: RegisterUserPayload) => RegisterUser(payload),
     onSuccess: (data: RegisterUserPayload) => {
-      console.log("success", data);
+      setIsVerificationSent(true);
     },
     onError: (error: CustomError) => {
       const { errorMessage } = error;

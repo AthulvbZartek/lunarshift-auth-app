@@ -22,26 +22,22 @@ const SignUpFormEmployer = () => {
   const [showVerificationCard, setShowVerificationCard] = useState(false);
   const [verificationCardTitle, setVerificationCardTitle] = useState("");
   const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const { mutate: RegisterUser } = useRegisterHooks();
+  const { mutate: RegisterUser } = useRegisterHooks(setIsVerificationSent);
 
-  const handleContinue = async () => {
-    try {
-      await form.validateFields();
-      const values = form.getFieldsValue();
-      const payload: RegisterUserPayload = {
-        email: values.email,
-        password: values.password,
-        firstName: values.orgName,
-        mobileNumber: values.mobile,
-        role: "Employer"
-      };
-      RegisterUser(payload);
-      // setIsVerificationSent(true);
-    } catch (error) {
-      console.error('Validation failed:', error);
-    }
-  };
+  function handleContinue(values: FieldType) {
+    if (!termsAccepted) return;
+    
+    const payload: RegisterUserPayload = {
+      email: values.email,
+      password: values.password,
+      firstName: values.orgName,
+      mobileNumber: values.mobile,
+      role: "Employer"
+    };
+    RegisterUser(payload);
+  }
 
   const handleSocialClick = () => {
     setVerificationCardTitle(`Enter Mobile Number`);
@@ -339,13 +335,12 @@ const SignUpFormEmployer = () => {
             <Form.Item
               name="agreeToTerms"
               valuePropName="checked"
-              rules={[{
-                validator: (_, value) =>
-                  value ? Promise.resolve() : Promise.reject(new Error('Please accept the terms and conditions')),
-              }]}
               style={{ marginBottom: "24px", textAlign: "center" }}
             >
-              <Checkbox style={{ fontSize: "16px" }}>
+              <Checkbox 
+                style={{ fontSize: "16px" }}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              >
                 By continuing you accept our{" "}
                 <a href="/terms" style={{ color: "#336699" }}>
                   Terms & Conditions
@@ -360,7 +355,8 @@ const SignUpFormEmployer = () => {
             <Form.Item style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
               <Button
                 type="primary"
-                onClick={handleContinue}
+                onClick={() => handleContinue(form.getFieldsValue())}
+                disabled={!termsAccepted}
                 style={{
                   height: "40px",
                   minWidth: "260px",
@@ -368,6 +364,7 @@ const SignUpFormEmployer = () => {
                   background:
                     "linear-gradient(to right top, #3779BC, #336699, #295985)",
                   boxShadow: "0 2px 12px #00000014",
+                  opacity: termsAccepted ? 1 : 0.5,
                 }}
               >
                 Sign Up
