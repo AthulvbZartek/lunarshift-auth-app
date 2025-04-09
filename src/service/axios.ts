@@ -35,10 +35,15 @@ export class Axios {
       async (error) => {
         const originalRequest = error.config;
         const refresh_token = LocalStorage?.getItem("refreshToken");
-        // Check if the user is not authenticated and add redirection logic
+        // Check if the user is not authenticated
         if (error?.response?.status === 401 && !refresh_token) {
-          // User is not authenticated, redirect to the login page
-          window.location.href = "/";
+          // Don't redirect on login page - just reject with error
+          // This prevents page reload on login failures
+          const currentPath = window.location.pathname;
+          if (currentPath !== '/' && currentPath !== '/login') {
+            // Only redirect if not already on login page
+            window.location.href = "/";
+          }
           return Promise.reject(error);
         }
         if (
@@ -70,7 +75,11 @@ export class Axios {
             } else {
               // remove authToken from localStorage
               LocalStorage?.clear();
-              window.location.href = "/";
+              // Only redirect if not already on login page
+              const currentPath = window.location.pathname;
+              if (currentPath !== '/' && currentPath !== '/login') {
+                window.location.href = "/";
+              }
             }
             const UserToken = LocalStorage.getItem("accessToken");
 
@@ -79,7 +88,11 @@ export class Axios {
             return axios(originalRequest);
           } catch (error) {
             LocalStorage.clear();
-            window.location.href = "/";
+            // Only redirect if not already on login page
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/' && currentPath !== '/login') {
+              window.location.href = "/";
+            }
             return Promise.reject(error);
           }
         }

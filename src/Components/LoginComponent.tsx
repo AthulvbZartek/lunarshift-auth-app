@@ -20,7 +20,7 @@ interface SocialLoginButtonProps {
 
 const LoginForm: React.FC = () => {
   const [form] = Form.useForm<FieldType>();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
@@ -47,40 +47,31 @@ const LoginForm: React.FC = () => {
     return isValid;
   };
 
-  const onFinish = useCallback(
-    async (values: FieldType): Promise<void> => {
-      try {
-        if (!validateFields()) {
-          return;
-        }
 
-        setIsSubmitting(true);
-        clearError();
-
-        const payload: LoginUserPayload = {
-          email: values.email,
-          password: values.password,
-        };
-
-        loginUser(payload, {
-          onError: (error: unknown): void => {
-            setErrorMessage("Invalid credentials");
-            console.error("Login error:", error);
-          },
-          onSuccess: (): void => {
-            // Handle successful login here
-            // window.location.href = "https://lunarshift-shell-app.vercel.app/";
-          },
-        });
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        setErrorMessage("Invalid credentials");
-      } finally {
-        setIsSubmitting(false);
+  const handleContinue = async () => {
+    try {
+      if (!validateFields()) {
+        return;
       }
-    },
-    [loginUser, clearError]
-  );
+      const values = form.getFieldsValue();
+      clearError();
+
+      const payload: LoginUserPayload = {
+        email: values.email,
+        password: values.password,
+      };
+
+      loginUser(payload, {
+        onError: (error: unknown): void => {
+          setErrorMessage("Invalid credentials");
+          console.error("Login error:", error);
+        }
+      });
+    } catch (error) {
+      console.error('Validation failed:', error);
+      setErrorMessage("Invalid credentials");
+    }
+  };
 
   // Check for field changes to clear errors on edit
   const handleFieldChange = useCallback(() => {
@@ -150,7 +141,6 @@ const LoginForm: React.FC = () => {
             <Form
               form={form}
               name="login"
-              onFinish={onFinish}
               autoComplete="off"
               layout="vertical"
               onValuesChange={handleFieldChange}
@@ -185,17 +175,11 @@ const LoginForm: React.FC = () => {
                 <Form.Item>
                   <Button
                     type="primary"
-                    htmlType="submit"
+                    onClick={handleContinue}
                     block
-                    loading={isSubmitting}
                     className={styles.loginButton}
-                    onClick={() => {
-                      if (!isSubmitting) {
-                        validateFields();
-                      }
-                    }}
                   >
-                    {isSubmitting ? "Logging in..." : "Login"}
+                    Login
                   </Button>
                 </Form.Item>
               </motion.div>
