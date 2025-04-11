@@ -51,13 +51,7 @@
   background-color: white;
   margin-bottom: 18px;
 }
-.loginButton {
-  height: 40px;
-  font-size: 16px;
-  background: linear-gradient(to right top, #3779bc, #336699, #295985);
-  margin-bottom: 16px;
-  box-shadow: 0 2px 12px #00000014;
-}
+
 .socialButton {
   display: flex;
   align-items: center;

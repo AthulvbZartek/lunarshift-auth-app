@@ -20,11 +20,10 @@ interface SocialLoginButtonProps {
 
 const LoginForm: React.FC = () => {
   const [form] = Form.useForm<FieldType>();
-  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
-  const { mutate: loginUser } = useLoginHooks();
+  const { mutate: loginUser, isPending } = useLoginHooks();
 
   // Memoized event handlers with useCallback
   const clearError = useCallback((): void => {
@@ -47,7 +46,6 @@ const LoginForm: React.FC = () => {
     return isValid;
   };
 
-
   const handleContinue = async () => {
     try {
       if (!validateFields()) {
@@ -65,10 +63,10 @@ const LoginForm: React.FC = () => {
         onError: (error: unknown): void => {
           setErrorMessage("Invalid credentials");
           console.error("Login error:", error);
-        }
+        },
       });
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error("Validation failed:", error);
       setErrorMessage("Invalid credentials");
     }
   };
@@ -168,21 +166,32 @@ const LoginForm: React.FC = () => {
                 />
               </Form.Item>
 
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Form.Item>
+              <Form.Item>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <Button
                     type="primary"
                     onClick={handleContinue}
                     block
-                    className={styles.loginButton}
+                    loading={isPending}
+                    style={{
+                      height: "40px",
+                      background:
+                        "linear-gradient(to right top, #3779bc, #336699, #295985)",
+                      color: "white",
+                      border: "none",
+                      fontSize: "16px",
+                      borderRadius: "5px",
+                      padding: "10px 20px",
+                    }}
                   >
                     Login
                   </Button>
-                </Form.Item>
-              </motion.div>
+                </motion.div>
+              </Form.Item>
             </Form>
 
             <div className={styles.forgotPasswordContainer}>

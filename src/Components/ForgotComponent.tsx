@@ -5,8 +5,9 @@ import { useState } from "react";
 import EmailVerificationCard from "./EmailVerificationCard";
 import { useForgotPasswordHooks } from "../api/ForgotPassword/hook";
 import { ForgotPasswordPayload } from "../api/ForgotPassword/Api";
+import { CustomError } from "../interface/customError";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 type FieldType = {
   email: string;
@@ -15,17 +16,25 @@ type FieldType = {
 const ForgotComponent = () => {
   const [form] = Form.useForm();
   const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const { mutate: forgotPassword } = useForgotPasswordHooks();
+  const { mutate: forgotPassword } = useForgotPasswordHooks(
+    setIsVerificationSent
+  );
 
   const onFinish = async (values: FieldType) => {
     try {
       const payload: ForgotPasswordPayload = {
         email: values.email,
       };
-      forgotPassword(payload);
+      forgotPassword(payload, {
+        onError: (error: CustomError) => {
+          setErrorMessage(error.errorMessage || "Failed to process request");
+        },
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
+      setErrorMessage("An unexpected error occurred");
     }
   };
   return (
@@ -98,6 +107,18 @@ const ForgotComponent = () => {
               >
                 Forgot Password
               </Title>
+              {errorMessage && (
+                <Text
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    color: "#ff4d4f",
+                    marginBottom: "16px",
+                  }}
+                >
+                  {errorMessage}
+                </Text>
+              )}
               <p
                 style={{
                   textAlign: "center",
