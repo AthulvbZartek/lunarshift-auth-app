@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useLoginHooks } from "../api/Login/hook";
 import { LoginUserPayload } from "../interface/Login";
-import { authService } from "../services/authService";
 import styles from "./LoginForm.module.css";
 
 const { Title, Text } = Typography;
